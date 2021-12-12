@@ -1,0 +1,9 @@
+#root{
+    overflow-x: hidden;
+    height:inherit;
+    width: auto;
+}
+
+.body{
+    height: max-content;
+}

@@ -1,0 +1,19 @@
+.login input[type=text],input[type=password], input[type=text]:focus{
+    border: none;
+    border-bottom: 1px solid grey;
+    outline: none;
+    margin-right: 5%;
+    width: 80%;
+    font-family: 'Merriweather', serif;
+    font-size: 20px;
+}
+
+.login h3,p,label,a{
+    font-family: 'Merriweather', serif;
+    
+}
+
+.btn{
+    font-family: 'Merriweather', serif;
+    width: 100%;
+}
