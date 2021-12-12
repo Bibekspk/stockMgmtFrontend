@@ -1,13 +1,21 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Card } from 'react-bootstrap';
-import './login.css'
+import './login.css';
+import { LoginAction } from '../../actions/auth.action';
 
-export class LoginComponent extends Component {
+let auth ={
+    username:"",
+    password:""
+}
+
+export class Login extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            view : ""
+            view : "",
+            auth: {...auth}
         }
     }
 
@@ -28,7 +36,20 @@ export class LoginComponent extends Component {
         }
     }
 
-    handleChange=()=>{
+    handleChange=(e)=>{
+        let {name,value} = e.target;
+       this.setState((prevState)=>({
+           auth:{
+               ...prevState.auth,
+               [name] : value
+           }
+       }))
+    }
+
+    handleSubmit=(e)=>{
+        e.preventDefault();
+        // console.log(this.state.auth);
+        this.props.login(this.state.auth)
     }
 
     render() {
@@ -38,12 +59,12 @@ export class LoginComponent extends Component {
                 <div className="col-md-1"></div>
                 <img className="col-md-6 col-sm-12 col-xs-12" alt="landing" src="/landing.png"></img>
                 <Card className="col-md-4 mt-3">
-                    <h2 className="text-center mt-2">LETS GET IN</h2><br />
-                    <form className="form-group mt-3">
+                    <h2 className="text-center mt-2">LET'S GET IN</h2><br />
+                    <form className="form-group mt-3" onSubmit={this.handleSubmit}>
                         <i className="fas fa-user" style={{ marginLeft: "17px", fontSize: "27px" }}></i>
-                        <input className=" text-center" type="text" placeholder="Username" /><br /><br />
+                        <input className="text-center" name="username" value={this.state.auth.username} onChange={this.handleChange} type="text" placeholder="Username" required/><br /><br />
                         <i class="fas fa-lock" style={{ marginLeft: "17px", fontSize: "27px" }}></i>
-                        <input className=" text-center" type={this.state.view ? "text" : "password"} placeholder="Password" /><br /><br/>
+                        <input className=" text-center" name="password" value={this.state.auth.password} onChange={this.handleChange} type={this.state.view ? "text" : "password"} placeholder="Password" required /><br /><br/>
                             <input type="checkbox" name="showPassword" id="showPassword" onChange={this.handlePassword}/><label htmlFor="showPassword">&nbsp;&nbsp;Show Password</label>
                             <a style={{float:'right',textDecoration:'none',color:'black'}} href="/forgot-password">Forgot Password ?</a><br/><br/>
                             <button className="btn btn-md btn-primary">Log In</button>
@@ -55,3 +76,13 @@ export class LoginComponent extends Component {
         )
     }
 }
+
+const MapStatetoProps=(rootState)=>({
+    user : rootState.auth.user
+})
+
+const MapDispatchtoProps=(dispatch)=>({
+    login : (data) => (dispatch(LoginAction(data)))
+})
+
+export const LoginComponent = connect(MapStatetoProps,MapDispatchtoProps)(Login);
