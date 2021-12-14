@@ -9,7 +9,7 @@ let auth ={
     password:""
 }
 
-export class Login extends Component {
+ class Login extends Component {
     constructor(props) {
         super(props);
 

@@ -1,8 +1,15 @@
 import React from 'react';
 import './landingpage.css';
 import { Card } from 'react-bootstrap';
+import { useNavigate } from 'react-router-dom';
 
 export const LandingPage = () => {
+    const navigate = useNavigate();
+
+    const handleLocation=()=>{
+        navigate('/login');
+    }
+ 
     return (
         <div className="row">
             <div className="col-md-1"></div>
@@ -11,7 +18,7 @@ export const LandingPage = () => {
                     <h1 className="text-center">Stock Management System</h1><br/>
                     <h3 className="text-center">Get Started !</h3>
                     <br/>
-                    <button className="btn btn-lg btn-primary">LOGIN</button><br/>
+                    <button className="btn btn-lg btn-primary" onClick={handleLocation}>LOGIN</button><br/>
                </Card>
             <div className="col-md-1"></div>
 
