@@ -1,4 +1,5 @@
-import { HttpCLient } from "../../utilities/httpClient"
+import { HttpCLient } from "../../utilities/httpClient";
+import navigate from '../../history'
 
 export const AuthConstant ={
     LOGIN_FAILURE: "LOGIN_FAILURE",
@@ -25,9 +26,9 @@ export const LoginAction=(data)=>dispatch=>{
     HttpCLient.POST('/login',data)
         .then((data)=>{
             dispatch(loginSuccessAction(data));
-            console.log(data);
+            navigate.push('/home');
         })
         .catch((error)=>{
-            dispatch((loginFailureAction(error.response.data.msg)));
+            dispatch((loginFailureAction(error)));
         })
 }
