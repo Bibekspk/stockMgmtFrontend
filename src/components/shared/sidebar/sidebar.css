@@ -1,0 +1,55 @@
+
+.sideBar li {
+    list-style-type: none; 
+    margin-top: 1%;  
+}
+
+.sideBar{
+    padding-top:1%;
+    margin-top: -10px;
+    height: 100vh;
+}
+
+.sideBar a{
+    color: white;
+    font-size: 20px;
+
+}
+
+.sideBar .btn{
+    text-align:left;
+    border:none;
+}
+
+.sideBar a:hover{
+    background-color: blue;
+    color:white;
+    border-radius: 5px;
+}
+
+.sideBar .submenu a, .sideBar .submenu2 a{
+    text-decoration: none;
+}
+
+.sideBar .submenu li:hover{
+    background-color: blue; 
+     color:white;
+    border-radius: 5px;
+}
+
+@media screen and (max-width:1106px) {
+    .sideBar{
+        display: block;
+        position: relative;
+        height: auto;
+        width:100%;
+    }
+    .content{
+        position: relative;
+        top:0%
+    }
+
+}
+
+
+

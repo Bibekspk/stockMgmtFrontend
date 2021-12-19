@@ -24,8 +24,12 @@ export const isLoading=()=>({
 export const LoginAction=(data)=>dispatch=>{
     dispatch(isLoading());
     HttpCLient.POST('/login',data)
-        .then((data)=>{
-            dispatch(loginSuccessAction(data));
+        .then((response)=>{
+            dispatch(loginSuccessAction(response));
+            localStorage.setItem('token',(JSON.stringify(response.data.token)));
+            localStorage.setItem('user',(JSON.stringify(response.data.user)));
+            console.log(response);
+            console.log(response.user);
             navigate.push('/home');
         })
         .catch((error)=>{
