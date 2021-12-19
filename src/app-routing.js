@@ -6,7 +6,7 @@ import navigate from './history';
 import { SideBar } from './components/shared/sidebar/sidebar';
 import { Topnavbar } from './components/shared/navbar/navbar';
 
-const AuthRoute = (props)=>{
+const AuthRoute = (props)=>{ // yesma <AuthRoute/> aaucha props.children ma 
 
     return localStorage.getItem("token") ?
         <div>
