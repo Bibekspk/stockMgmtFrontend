@@ -5,8 +5,9 @@ import { HomePage } from './components/pages/homePage/homePage';
 import navigate from './history';
 import { SideBar } from './components/shared/sidebar/sidebar';
 import { Topnavbar } from './components/shared/navbar/navbar';
+import { AddStock } from './components/pages/stocks/AddStock/addStock';
 
-const AuthRoute = (props)=>{ // yesma <AuthRoute/> aaucha props.children ma 
+const ProtectedRoute = (props)=>{ // yesma <ProtectedRoute/> aaucha props.children ma 
 
     return localStorage.getItem("token") ?
         <div>
@@ -26,7 +27,8 @@ export const AppRouting = ()=>{
             {/* exact has been removed and activeClassName has been removed in NavLink */}
                 <Route path="/" element={<LandingPage/>} > </Route>
                 <Route path="/login" element={<LoginComponent/>} > </Route>
-                <Route path="/home" element={<AuthRoute><HomePage/></AuthRoute>}> </Route>
+                <Route path="/home" element={<ProtectedRoute><HomePage/></ProtectedRoute>}> </Route>
+                <Route path='/addStock' element={<ProtectedRoute><AddStock/></ProtectedRoute>}></Route>
             </Routes>
         </BrowserRouter>
     )

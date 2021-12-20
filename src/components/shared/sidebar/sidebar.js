@@ -25,7 +25,7 @@ export const SideBar = (props) => {
                         <br />
                         <div class="collapse" id="collapseExample">
                             <ul>
-                                <li className='mt-2'><a href="#">Add Stock</a></li>
+                                <li className='mt-2'><a href="/addStock">Add Stock</a></li>
                                 <li className='mt-1'><a href="#">Sell Stock</a></li>
                                 <li className='mt-1'><a href="#">View Stock</a></li>
                             </ul>
@@ -67,7 +67,7 @@ export const SideBar = (props) => {
                     </li>
                 </ul>
             </div>
-            <div class="col-md-9 content">
+            <div class="col-md-10  content">
                 {props.children}
             </div>
         </div>

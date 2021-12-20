@@ -1,12 +1,26 @@
 import React from 'react';
 import { Navbar, Container, Nav,NavLink,NavDropdown } from 'react-bootstrap';
+import {useNavigate} from 'react-router-dom';
 
 export const Topnavbar = () => {
+    const navigate = useNavigate(); //gives navigate prop which is used to navigate to other pages
+
+    let handleLogout=()=>{
+        localStorage.clear();
+        navigate('/login');
+    }
+
+    let handleLogin=()=>{
+        navigate('/login')
+    }
+
+
+    let token = JSON.parse(localStorage.getItem('token'));
     return (
         <div>
             <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
                 <Container>
-                    <Navbar.Brand href="#home">STOCK MANAGEMENT SYSTEM</Navbar.Brand>
+                    <Navbar.Brand href="/home">STOCK MANAGEMENT SYSTEM</Navbar.Brand>
                     <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                     <Navbar.Collapse id="responsive-navbar-nav">
                         <Nav className="me-auto">
@@ -21,7 +35,11 @@ export const Topnavbar = () => {
                             </NavDropdown>
                         </Nav>
                         <Nav>
-                           <button to="/login" className="btn btn-primary">Login</button>
+                           { token ?
+                           <button className="btn btn-primary" onClick={handleLogout}>Logout</button>
+                           :
+                           <button className="btn btn-primary" onClick={handleLogin}>Login</button>
+                           }
                         </Nav>
                     </Navbar.Collapse>
                 </Container>

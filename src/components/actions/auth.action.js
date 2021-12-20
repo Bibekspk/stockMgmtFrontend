@@ -28,9 +28,8 @@ export const LoginAction=(data)=>dispatch=>{
             dispatch(loginSuccessAction(response));
             localStorage.setItem('token',(JSON.stringify(response.data.token)));
             localStorage.setItem('user',(JSON.stringify(response.data.user)));
-            console.log(response);
-            console.log(response.user);
             navigate.push('/home');
+            navigate.go(0);
         })
         .catch((error)=>{
             dispatch((loginFailureAction(error)));
