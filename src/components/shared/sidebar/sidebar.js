@@ -26,14 +26,14 @@ export const SideBar = (props) => {
                         <div class="collapse" id="collapseExample">
                             <ul>
                                 <li className='mt-2'><a href="/addStock">Add Stock</a></li>
-                                <li className='mt-1'><a href="#">Sell Stock</a></li>
                                 <li className='mt-1'><a href="#">View Stock</a></li>
+                                <li className='mt-1'><a href="#">Add Category</a></li>
                             </ul>
                         </div>
                     </li>
                     <li class="nav-item">
                         <a href="#" class="nav-link">
-                            <span class="ms-1 ">&nbsp;Cheque</span>
+                            <span class="ms-1 ">&nbsp;Sales</span>
                         </a>
                     </li>
                     <li>
@@ -42,8 +42,14 @@ export const SideBar = (props) => {
                             <span class="ms-1 ">&nbsp;Customers</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="#" class="nav-link">
+                            <span><PeopleFill></PeopleFill></span>
+                            <span class="ms-1 ">&nbsp;Items</span>
+                        </a>
+                    </li>
                     <li className="submenu">
-                    {/* href chai kun collapse kholni vanera ho, collapseExample1 cha tei vayera tyo extend huncha 
+                        {/* href chai kun collapse kholni vanera ho, collapseExample1 cha tei vayera tyo extend huncha 
                     but if collapseExample2 vayeko vaye arko extend hunthyo yeha click garda   */}
                         <a className="btn btn-lg btn-dark" data-bs-toggle="collapse" href="#collapseExample1" role="button1" aria-expanded="false" aria-controls="collapseExample">
                             <span><GearFill></GearFill></span>
@@ -67,7 +73,7 @@ export const SideBar = (props) => {
                     </li>
                 </ul>
             </div>
-            <div class="col-md-10  content">
+            <div class="col-md-10 content">
                 {props.children}
             </div>
         </div>
