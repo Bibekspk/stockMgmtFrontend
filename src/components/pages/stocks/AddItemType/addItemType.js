@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {Plus} from 'react-bootstrap-icons'
+import { toast } from 'react-toastify';
 import { HttpCLient } from '../../../../utilities/httpClient';
 
 export class AddItemType extends Component {
@@ -14,12 +15,13 @@ export class AddItemType extends Component {
         console.log(this.state);
         HttpCLient.POST('/stock/addItemType',this.state,null,true)
             .then(data=>{
-                console.log("addded Successfully")
+                console.log("addded Successfully");
+                toast.success("Item Type Added Successfully")
                 console.log(data);
             })            
-            .catch(error=>{
+            .catch((error)=>{
                 console.log("Error occured during addition of item type");
-                console.log(error);
+                toast.error(error.response.data.msg);
             })
     }
 
@@ -35,7 +37,7 @@ export class AddItemType extends Component {
                 <h2>Add Item Type</h2>
                 <form className='card ms-2 form-group px-3 py-3' onSubmit={this.handleSubmit}>
                     <label htmlFor='itemType' className='form-label'>Item Type</label>
-                    <input type="text" className='form-control' onChange={this.handleChange} name="itemType" id="itemType" placeholder="Item Type.." value={this.state.itemType}></input>
+                    <input type="text" className='form-control' onChange={this.handleChange} name="itemType" id="itemType" placeholder="Item Type.." value={this.state.itemType} required></input>
                     <hr></hr>
                     <button type='submit' className='btn btn-success'><Plus color='white' size='25px'></Plus>Add</button>
                 </form>
