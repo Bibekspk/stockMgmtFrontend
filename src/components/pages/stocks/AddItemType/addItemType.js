@@ -21,7 +21,7 @@ export class AddItemType extends Component {
             })            
             .catch((error)=>{
                 console.log("Error occured during addition of item type");
-                toast.error(error.response.data.msg);
+                toast.info(error.response.data.msg);
             })
     }
 

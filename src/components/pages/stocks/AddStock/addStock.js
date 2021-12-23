@@ -1,4 +1,6 @@
 import React, { Component } from 'react'
+import { connect } from 'react-redux';
+import { getItemTypeAction } from '../../../actions/stock.action';
 
 export class AddStock extends Component {
     constructor(props) {
@@ -8,7 +10,13 @@ export class AddStock extends Component {
 
         }
     }
+
+    componentDidMount(){
+        console.log(this.props.getItemType());
+        console.log(this.props.itemArray);
+    }
     render() {
+        let {itemArray} = this.props
         return (
             <div className='addStock me-3'>
                 <h2 className='ms-2'>Add Stock</h2>
@@ -22,8 +30,11 @@ export class AddStock extends Component {
                         <div className='col'>
                             <label className='form-label'>Item Type</label>
                             <select className='form-select' type="text" name="ItemName" id="ItemName">
-                                <option value="Rice">Rice</option>
-                                <option value="Daal">Daal</option>
+                            {
+                                itemArray.map((item,index)=>(
+                                    <option key={index} value={item.itemType}>{item.itemType}</option>
+                                ))
+                            }
                             </select>
                         </div>
                     </div>
@@ -50,3 +61,13 @@ export class AddStock extends Component {
         )
     }
 }
+
+const MapDispatchToProps=dispatch=>({
+    getItemType : ()=>(dispatch(getItemTypeAction()))
+})
+
+const MapStateToProps=(rootState)=>({
+    itemArray: rootState.stocks.itemTypeArray
+})
+
+export const AddStockComponent = connect(MapStateToProps,MapDispatchToProps)(AddStock)
