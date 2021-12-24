@@ -5,8 +5,8 @@ import { HomePage } from './components/pages/homePage/homePage';
 import navigate from './history';
 import { SideBar } from './components/shared/sidebar/sidebar';
 import { Topnavbar } from './components/shared/navbar/navbar';
-import { AddStockComponent } from './components/pages/stocks/AddStock/addStock';
 import { AddItemType } from './components/pages/stocks/AddItemType/addItemType';
+import { AddStock } from './components/pages/stocks/AddStocks/addStock';
 
 const ProtectedRoute = (props)=>{ // yesma <ProtectedRoute/> aaucha props.children ma 
 
@@ -29,7 +29,7 @@ export const AppRouting = ()=>{
                 <Route path="/" element={<LandingPage/>} > </Route>
                 <Route path="/login" element={<LoginComponent/>} > </Route>
                 <Route path="/home" element={<ProtectedRoute><HomePage/></ProtectedRoute>}> </Route>
-                <Route path='/addStock' element={<ProtectedRoute><AddStockComponent/></ProtectedRoute>}></Route>
+                <Route path='/addStock' element={<ProtectedRoute><AddStock/></ProtectedRoute>}></Route>
                 <Route path='/addItemType' element={<ProtectedRoute><AddItemType/></ProtectedRoute>}></Route>
             </Routes>
         </BrowserRouter>

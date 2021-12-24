@@ -8,7 +8,7 @@ export const StockReducers =(state=[],action)=>{
                 ...state,
                 isLoading: true,
                 isSuccess: false,
-                error:null
+                error: null
             }
         case StockConstants.GET_ITEMTYPE_SUCCESS:
             return{
@@ -21,7 +21,7 @@ export const StockReducers =(state=[],action)=>{
         case StockConstants.GET_ITEMTYPE_FAILURE:
             return{
                 ...state,
-                isLaoding: false,
+                isLoading: false,
                 isSuccess:false,
                 error: action.payload
             }

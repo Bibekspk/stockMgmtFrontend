@@ -28,7 +28,7 @@ export const getItemTypeAction=()=>dispatch=>{
             console.log(response.data.data);
         })
         .catch((error)=>{
-            console.log(error.data.msg);
-            dispatch(getItemTypeFailure(error.data.msg));
+            // console.log(error.data.msg);
+            // dispatch(getItemTypeFailure(error.data.msg));
         })
 }
