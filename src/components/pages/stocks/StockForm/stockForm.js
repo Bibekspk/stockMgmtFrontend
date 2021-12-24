@@ -96,21 +96,13 @@ export class StockForm extends Component {
                         </div>
                         <hr></hr>
                         <div className='row'>
-                            <div className='col'>
+                            <div className='col-md-6'>
                                 <label className='form-label'>Quantity</label>
                                 <input className='form-control' type="number" name="quantity" id="quantity" onChange={this.handleChange} required></input>
                             </div>
-                            <div className='col'>
-                                <label className='form-label'>Rate</label>
-                                <input className='form-control' type="number" name="rate" id="rate" onChange={this.handleChange} required></input>
-                            </div>
-                            <div className='col'>
-                                <label className='form-label'>Purchased Date</label>
-                                <input className='form-control' type="date" name="purchasedDate" id="purchasedDate" onChange={this.handleChange} required></input>
-                            </div>
                         </div>
                         <hr></hr>
-                        <button className='btn btn-success' type="submit">Add Item</button>
+                        <button disabled={this.props.isLoading} className='btn btn-success' type="submit">{this.props.isLoading? "Adding Stock" : "Add Stock"}</button>
                     </form>
 
                 </div>

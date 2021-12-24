@@ -27,7 +27,7 @@ export const SideBar = (props) => {
                             <ul>
                                 <li className='mt-2'><a href="/addStock">Add Stock</a></li>
                                 <li className='mt-1'><a href="#">View Stock</a></li>
-                                <li className='mt-1'><a href="#">Add Category</a></li>
+                                <li className='mt-1'><a href="/additemType">Add ItemType</a></li>
                             </ul>
                         </div>
                     </li>
@@ -42,11 +42,20 @@ export const SideBar = (props) => {
                             <span class="ms-1 ">&nbsp;Customers</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="#" class="nav-link">
-                            <span><PeopleFill></PeopleFill></span>
-                            <span class="ms-1 ">&nbsp;Items</span>
+                    <li className="submenu">
+                        <a class="btn btn-lg btn-dark" data-bs-toggle="collapse" href="#collapseExample2" role="button" aria-expanded="false" aria-controls="collapseExample">
+                            <span><Stack></Stack></span>
+                            <span class="mx-2">Items</span>{/* d-none d-sm-inline vanya hide in xs huda*/}
+                            <span>{' '}{' '}<CaretDownFill></CaretDownFill></span>
                         </a>
+                        <br />
+                        <div class="collapse" id="collapseExample2">
+                            <ul>
+                                <li className='mt-2'><a href="/addItem">Add Item</a></li>
+                                <li className='mt-1'><a href="#">View Item</a></li>
+                                <li className='mt-1'><a href="#">Search</a></li>
+                            </ul>
+                        </div>
                     </li>
                     <li className="submenu">
                         {/* href chai kun collapse kholni vanera ho, collapseExample1 cha tei vayera tyo extend huncha 
