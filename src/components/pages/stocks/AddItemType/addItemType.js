@@ -12,16 +12,13 @@ export class AddItemType extends Component {
     }
     handleSubmit=(e)=>{
         e.preventDefault();
-        console.log(this.state);
+        if(!this.state.itemType) return toast.info("Please provide input!!")
         HttpCLient.POST('/stock/addItemType',this.state,null,true)
             .then(data=>{
-                console.log("addded Successfully");
                 toast.success("Item Type Added Successfully")
-                console.log(data);
             })            
             .catch((error)=>{
-                console.log("Error occured during addition of item type");
-                toast.info(error.response.data.msg);
+                toast.error(error.response.data.msg);
             })
     }
 

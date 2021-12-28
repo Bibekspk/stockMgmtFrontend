@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux';
-import { getItemTypeAction } from '../../../actions/stock.action';
+import { getItemsAction, getItemTypeAction } from '../../../actions/stock.action';
 import Select from 'react-select';
 import { toast } from 'react-toastify';
 
@@ -18,19 +18,20 @@ export class StockForm extends Component {
 
         this.state = {
             itemType: [],
-            stockData: { ...addForm }
-
+            items: [],
+            stockData: { ...addForm },
+            isValidate: ''
         }
     }
 
     componentDidMount = () => {
         this.props.getItemType();
-
+        this.props.getItems();
     }
 
-    componentDidUpdate = (prevProps) => { //checks if the prevProps and newProps are same, if not it runs
-        let { itemType } = this.state
-        if (prevProps.itemTypeArray !== this.props.itemTypeArray) {
+    componentDidUpdate = (prevProps,prevState) => { //checks if the prevProps and newProps are same, if not it runs
+        let { itemType,items } = this.state
+        if (prevProps.itemTypeArray !== this.props.itemTypeArray) { //checking prev and latest prop
             (this.props.itemTypeArray || []).map((item) => {
                 let itemObject = {
                     value: item.itemType,
@@ -38,9 +39,21 @@ export class StockForm extends Component {
                 }
                 itemType.push(itemObject);
                 this.setState({
-                    'itemType': [...itemType] // spreading array to add new object individually 
-                    //into the array
+                    'itemType': [...itemType] // spreading array to add new object individually into the array
                 })
+            })
+        }
+        if(prevProps.itemArray !== this.props.itemArray){
+            (this.props.itemArray || []).map((item)=>{
+                let itemObject ={
+                    value: item.itemName,
+                    label: item.itemName
+                }
+                items.push(itemObject);
+                this.setState((prevState)=>({
+                    ...prevState,
+                    items: [...items]
+                }))
             })
         }
     }
@@ -64,6 +77,10 @@ export class StockForm extends Component {
         }))
     }
 
+    validateForm=()=>{
+        
+    }
+
     handleSubmit = (e) => {
         e.preventDefault();
         let {stockData} = this.state;
@@ -80,7 +97,14 @@ export class StockForm extends Component {
                         <div className='row'>
                             <div className='col'>
                                 <label className='form-label'>Item Name</label>
-                                <input className='form-control' type="text" name="itemName" id="itemName" onChange={this.handleChange} required></input>
+                                {/* <input className='form-control' type="text" name="itemName" id="itemName" onChange={this.handleChange} required></input> */}
+                                <Select
+                                    options={this.state.items}
+                                    onChange={this.handleSelect}
+                                    isSearchable="true"
+                                    required
+                                >
+                                </Select>
                             </div>
 
                             <div className='col'>
@@ -111,12 +135,14 @@ export class StockForm extends Component {
 }
 
 const MapDispatchToProps = dispatch => ({
-    getItemType: () => (dispatch(getItemTypeAction()))
+    getItemType: () => (dispatch(getItemTypeAction())),
+    getItems :()=> (dispatch(getItemsAction()))
 })
 
 const MapStateToProps = (rootState) => ({
     itemTypeArray: rootState.stocks.itemTypeArray,
-    isLoading: rootState.stocks.isLoading
+    isLoading: rootState.stocks.isLoading,
+    itemArray: rootState.stocks.itemsArray
 })
 
 export const StockFormComponent = connect(MapStateToProps, MapDispatchToProps)(StockForm)
