@@ -50,11 +50,11 @@ export class StockForm extends Component {
             })
         }
         if (prevProps.itemArray !== this.props.itemArray) {
-            (this.props.itemArray || []).map((item) => {
-                let itemObject = {
+            (this.props.itemArray || []).map((item,index) => {
+                let itemObject = { // preparing array of item for select react bcoz it accepts objet with value and label 
                     value: item.itemName,
                     label: item.itemName,
-                    id:item.ItemRef
+                    id: index+1
 
                 }
                 items.push(itemObject);
@@ -66,7 +66,7 @@ export class StockForm extends Component {
         }
     }
 
-    handleChange = (e) => {
+    handleChange = (e) => { //handles adding item data and edit data of items
         let { name, value } = e.target;
         this.setState((prevState) => ({
             stockData: {
@@ -97,26 +97,63 @@ export class StockForm extends Component {
 
     handleEditRow=(e,itemId)=>{
         e.preventDefault();
-        console.log(itemId);
-        console.log(this.state);
         this.setState((prevState)=>({
             ...prevState,
-            editItemId: itemId
+            editItemId: itemId //setting item id to use conditional statement 
         }))
     }
 
+    handleEditSave=(e,id)=>{ //saves edited info
+        e.preventDefault();
+        let {purchaseArray,stockData} = this.state;
+        let index = purchaseArray.findIndex((item)=> item.id === id); // finds index of id in purchase array  
 
-    handleAdd = (e) => {
+        purchaseArray[index] = stockData;
+        this.setState({
+            purchaseArray : [...purchaseArray],
+            editItemId: "" // setting item id null so that readonly row appears 
+        })
+    }
+
+    handleEditCancel=(e)=>{
+        e.preventDefault();
+        this.setState({
+            editItemId: '' //setting item id null so that readonly row appears
+        })
+    }
+
+
+    handleAdd = (e) => { // adding item in an array 
         e.preventDefault();
         let { stockData, purchaseArray } = this.state;
-        if (!stockData.itemType )
-            return toast.info("Please provide all the data  !!!");
+
+        // checking if user adds item twice 
+       if(this.handleItemUnique()) return toast.error("Item already added !! ") 
         purchaseArray.push(stockData);
+        this.setState({
+            purchaseArray: [...purchaseArray],
+        })
+        // this.props.submitData(this.state.stockData);
+    }
+
+    handleItemUnique=()=>{ // checking if user adds item twice 
+        let { stockData, purchaseArray } = this.state;
+        let error = ""
+        purchaseArray.length >=1 && purchaseArray.map((item)=>{
+            if( item.itemName === stockData.itemName) 
+             error = "true" 
+         }) 
+         return error
+    }
+
+    handleDelete=(e,id)=>{
+        e.preventDefault();
+        let {purchaseArray} = this.state;
+        let index = purchaseArray.findIndex((item)=> item.id === id);
+        purchaseArray.splice(index,1);
         this.setState({
             purchaseArray: [...purchaseArray]
         })
-        // this.props.submitData(this.state.stockData);
-
     }
     render() {
         let { purchaseArray,editItemId } = this.state;
@@ -148,16 +185,16 @@ export class StockForm extends Component {
                     <div className='row'>
                         <div className='col-md-6'>
                             <label className='form-label'>Quantity</label>
-                            <input className='form-control' type="number" name="quantity" id="quantity" onChange={this.handleChange} required="true"></input>
+                            <input className='form-control' type="number" name="quantity" id="quantity" onChange={this.handleChange} required="required"></input>
                         </div>
                         <div className='col-md-6'>
                             <label className='form-label'>Rate</label>
-                            <input className='form-control' type="number" name="price" id="price" onChange={this.handleChange} required="true"></input>
+                            <input className='form-control' type="number" name="price" id="price" onChange={this.handleChange} required="required"></input>
                         </div>
                     </div>
                     <hr></hr>
                     <button className='btn btn-success' onClick={this.handleAdd} >Add Item</button>
-                    <div className='tablediv'>
+                    <div className='tablediv container-fluid'>
                         <table className='table table-striped text-center'>
                             <thead >
                                 <tr>
@@ -170,15 +207,14 @@ export class StockForm extends Component {
                             </thead>
                             <tbody>
                                 {purchaseArray.map((item, index) => (
-                                    editItemId ? <EditableRow item={item}/> :
-                                    <ReadOnlyRow item={item} index={index} handleEditRow={this.handleEditRow} />
+                                    editItemId === item.id ?
+                                    <EditableRow item={this.state.stockData} handleChange={this.handleChange} handleEditSave={this.handleEditSave} handleCancel={this.handleEditCancel}/> :
+                                    <ReadOnlyRow item={item} index={index} handleEditRow={this.handleEditRow} handleDelete={this.handleDelete} />
                                 ))}
                             </tbody>
                         </table>
                     </div>
                 </form>
-
-
             </div>
         )
     }

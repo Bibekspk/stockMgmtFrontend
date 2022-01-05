@@ -7,4 +7,6 @@
 .tablediv{
     overflow-y: scroll;
     height: 190px;
+    overflow-x: scroll;
+    width: 100%;
 }

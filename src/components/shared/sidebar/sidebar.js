@@ -5,7 +5,7 @@ import { HouseFill, Stack, GearFill, PeopleFill, BoxArrowLeft, CaretDownFill } f
 export const SideBar = (props) => {
     return (
         <div class="row">
-            <div class="sideBar col-xs-12 col-md-2 bg-dark" >
+            <div class="sideBar col-xs-12 col-sm-12 col-md-2 bg-dark" >
                 <a href="/" class="align-items-center text-light text-decoration-none bg-dark">
                     <span class="mx-4">DASHBOARD</span>
                 </a>
