@@ -12,9 +12,17 @@ let addForm = {
     'itemName': "",
     'quantity': "",
     'itemType': "",
-    'rate': "",
+    'price': "",
     'purchasedDate': ""
+}
 
+let errorForm = {
+    'id':"",
+    'itemName': "",
+    'quantity': "",
+    'itemType': "",
+    'price': "",
+    'purchasedDate': ""
 }
 export class StockForm extends Component {
     constructor(props) {
@@ -24,6 +32,7 @@ export class StockForm extends Component {
             itemType: [],
             items: [],
             stockData: { ...addForm },
+            stockDataError: {...errorForm},
             purchaseArray: [],
             isValidate: '',
             editItemId: ''
@@ -107,7 +116,6 @@ export class StockForm extends Component {
         e.preventDefault();
         let {purchaseArray,stockData} = this.state;
         let index = purchaseArray.findIndex((item)=> item.id === id); // finds index of id in purchase array  
-
         purchaseArray[index] = stockData;
         this.setState({
             purchaseArray : [...purchaseArray],
@@ -122,11 +130,10 @@ export class StockForm extends Component {
         })
     }
 
-
     handleAdd = (e) => { // adding item in an array 
         e.preventDefault();
         let { stockData, purchaseArray } = this.state;
-
+        if(!this.formValidate()) return toast.info("Please provide value in all fields !!")
         // checking if user adds item twice 
        if(this.handleItemUnique()) return toast.error("Item already added !! ") 
         purchaseArray.push(stockData);
@@ -140,10 +147,25 @@ export class StockForm extends Component {
         let { stockData, purchaseArray } = this.state;
         let error = ""
         purchaseArray.length >=1 && purchaseArray.map((item)=>{
-            if( item.itemName === stockData.itemName) 
+            if( item.itemName === stockData.itemName && item.price === stockData.price) //same item different rate 
              error = "true" 
          }) 
          return error
+    }
+    
+    formValidate=()=>{
+        let {stockData,stockDataError} = this.state;
+      stockDataError.itemName = stockData.itemName ? "" : "error";  
+      stockDataError.itemType = stockData.itemType ? "" : "error";  
+      stockDataError.price = stockData.price ? "" : "error";  
+      stockDataError.quantity = stockData.quantity ? "" : "error"; 
+      
+      this.setState({
+          stockDataError
+      })
+     let errorArray =  Object.values(stockDataError).filter((error)=> error);
+     if(errorArray.length === 0) return true
+     else return false 
     }
 
     handleDelete=(e,id)=>{
@@ -164,7 +186,7 @@ export class StockForm extends Component {
                     <div className='row'>
                         <div className='col'>
                             <label className='form-label'>Item Name</label>
-                            <Select
+                            <Select maxMenuHeight={150}
                                 options={this.state.items}
                                 onChange={this.handleSelectItem}
                                 isSearchable="true"
@@ -173,7 +195,7 @@ export class StockForm extends Component {
                         </div>
                         <div className='col'>
                             <label className='form-label'>Item Type</label>
-                            <Select
+                            <Select maxMenuHeight={150}
                                 options={this.state.itemType}
                                 onChange={this.handleSelectItemType}
                                 isSearchable="true"
