@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { nanoid } from 'nanoid'
 import { connect } from 'react-redux';
 import { getItemsAction, getItemTypeAction } from '../../../actions/stock.action';
 import Select from 'react-select';
@@ -8,7 +9,7 @@ import './stockForm.css'
 import { EditableRow } from './EditableRow';
 
 let addForm = {
-    'id':"",
+    'id': "",
     'itemName': "",
     'quantity': "",
     'itemType': "",
@@ -16,14 +17,6 @@ let addForm = {
     'purchasedDate': ""
 }
 
-let errorForm = {
-    'id':"",
-    'itemName': "",
-    'quantity': "",
-    'itemType': "",
-    'price': "",
-    'purchasedDate': ""
-}
 export class StockForm extends Component {
     constructor(props) {
         super(props);
@@ -32,10 +25,11 @@ export class StockForm extends Component {
             itemType: [],
             items: [],
             stockData: { ...addForm },
-            stockDataError: {...errorForm},
+            stockDataError: { ...addForm },
             purchaseArray: [],
-            isValidate: '',
-            editItemId: ''
+            editItemId: '',
+            selectedItem: "",
+            selectedItemType: ""
         }
     }
 
@@ -59,13 +53,13 @@ export class StockForm extends Component {
             })
         }
         if (prevProps.itemArray !== this.props.itemArray) {
-            (this.props.itemArray || []).map((item,index) => {
+            (this.props.itemArray || []).map((item, index) => {
                 let itemObject = { // preparing array of item for select react bcoz it accepts objet with value and label 
                     value: item.itemName,
                     label: item.itemName,
-                    id: index+1
-
+                    id: index + 1
                 }
+
                 items.push(itemObject);
                 this.setState((prevState) => ({
                     ...prevState,
@@ -90,52 +84,56 @@ export class StockForm extends Component {
             stockData: {
                 ...prevState.stockData,
                 'itemType': selectedOption.value
-            }
+            },
+            selectedItemType: selectedOption
         }))
     }
 
-    handleSelectItem = (selectedOption)=>{
-        this.setState((prevState)=>({
-           stockData:{
-               ...prevState.stockData,
-               itemName: selectedOption.value,
-               id: selectedOption.id
-           } 
+    handleSelectItem = (selectedOption) => {
+        this.setState((prevState) => ({
+            stockData: {
+                ...prevState.stockData,
+                itemName: selectedOption.value,
+                id: nanoid(7)
+            },
+            selectedItem: selectedOption // saving selectedOption value bcoz this value is seen in input field 
+            // doing this for using reset button for reseting field
         }))
     }
 
-    handleEditRow=(e,itemId)=>{
+    handleEditRow = (e, itemId) => { //saving editId in store so that i can use condition to display editable row for 
+        // particular ID
         e.preventDefault();
-        this.setState((prevState)=>({
+        this.setState((prevState) => ({
             ...prevState,
             editItemId: itemId //setting item id to use conditional statement 
         }))
     }
 
-    handleEditSave=(e,id)=>{ //saves edited info
+    handleEditSave = (e, id) => { //saves edited info
         e.preventDefault();
-        let {purchaseArray,stockData} = this.state;
-        let index = purchaseArray.findIndex((item)=> item.id === id); // finds index of id in purchase array  
-        purchaseArray[index] = stockData;
+        let { purchaseArray, stockData } = this.state;
+        let index = purchaseArray.findIndex((item) => item.id === id);//finds index of id in purchase array to edit 
+        purchaseArray[index] = stockData; // new stockdata is made in handeleChange and saved in array again
         this.setState({
-            purchaseArray : [...purchaseArray],
+            purchaseArray: [...purchaseArray],
             editItemId: "" // setting item id null so that readonly row appears 
         })
     }
 
-    handleEditCancel=(e)=>{
+    handleEditCancel = (e) => {
         e.preventDefault();
         this.setState({
             editItemId: '' //setting item id null so that readonly row appears
         })
     }
 
-    handleAdd = (e) => { // adding item in an array 
+    handleAdd = (e) => { // adding item in an array to display in the table 
         e.preventDefault();
         let { stockData, purchaseArray } = this.state;
-        if(!this.formValidate()) return toast.info("Please provide value in all fields !!")
-        // checking if user adds item twice 
-       if(this.handleItemUnique()) return toast.error("Item already added !! ") 
+        if (!this.formValidate()) return toast.info("Please provide value in all fields !!")
+        // checking if user adds item twice with same rate
+        if (this.handleItemUnique()) return toast.error("Item already added !! ")
         purchaseArray.push(stockData);
         this.setState({
             purchaseArray: [...purchaseArray],
@@ -143,42 +141,43 @@ export class StockForm extends Component {
         // this.props.submitData(this.state.stockData);
     }
 
-    handleItemUnique=()=>{ // checking if user adds item twice 
+    handleItemUnique = () => { // checking if user adds item twice 
         let { stockData, purchaseArray } = this.state;
         let error = ""
-        purchaseArray.length >=1 && purchaseArray.map((item)=>{
-            if( item.itemName === stockData.itemName && item.price === stockData.price) //same item different rate 
-             error = "true" 
-         }) 
-         return error
-    }
-    
-    formValidate=()=>{
-        let {stockData,stockDataError} = this.state;
-      stockDataError.itemName = stockData.itemName ? "" : "error";  
-      stockDataError.itemType = stockData.itemType ? "" : "error";  
-      stockDataError.price = stockData.price ? "" : "error";  
-      stockDataError.quantity = stockData.quantity ? "" : "error"; 
-      
-      this.setState({
-          stockDataError
-      })
-     let errorArray =  Object.values(stockDataError).filter((error)=> error);
-     if(errorArray.length === 0) return true
-     else return false 
+        purchaseArray.length >= 1 && purchaseArray.map((item) => {
+            if (item.itemName === stockData.itemName && item.price === stockData.price) //same item different rate 
+                error = "true"
+        })
+        return error
     }
 
-    handleDelete=(e,id)=>{
+    formValidate = () => {
+        let { stockData, stockDataError } = this.state;
+        stockDataError.itemName = stockData.itemName ? "" : "error";
+        stockDataError.itemType = stockData.itemType ? "" : "error";
+        stockDataError.price = stockData.price ? "" : "error";
+        stockDataError.quantity = stockData.quantity ? "" : "error";
+
+        this.setState({
+            stockDataError
+        })
+        let errorArray = Object.values(stockDataError).filter((error) => error);
+        if (errorArray.length === 0) return true
+        else return false
+    }
+
+    handleDelete = (e, id) => {
         e.preventDefault();
-        let {purchaseArray} = this.state;
-        let index = purchaseArray.findIndex((item)=> item.id === id);
-        purchaseArray.splice(index,1);
+        let { purchaseArray } = this.state;
+        let index = purchaseArray.findIndex((item) => item.id === id);
+        purchaseArray.splice(index, 1);
         this.setState({
             purchaseArray: [...purchaseArray]
         })
     }
+
     render() {
-        let { purchaseArray,editItemId } = this.state;
+        let { purchaseArray, editItemId } = this.state;
         return (
             <div className='addStock me-3'>
                 <h2 className='ms-2'>{this.props.mode}</h2>
@@ -189,8 +188,8 @@ export class StockForm extends Component {
                             <Select maxMenuHeight={150}
                                 options={this.state.items}
                                 onChange={this.handleSelectItem}
-                                isSearchable="true"
-                                required>
+                                value={this.state.selectedItem}
+                                isSearchable="true">
                             </Select>
                         </div>
                         <div className='col'>
@@ -198,8 +197,8 @@ export class StockForm extends Component {
                             <Select maxMenuHeight={150}
                                 options={this.state.itemType}
                                 onChange={this.handleSelectItemType}
-                                isSearchable="true"
-                                required>
+                                value={this.state.selectedItemType}
+                                isSearchable="true">
                             </Select>
                         </div>
                     </div>
@@ -207,15 +206,15 @@ export class StockForm extends Component {
                     <div className='row'>
                         <div className='col-md-6'>
                             <label className='form-label'>Quantity</label>
-                            <input className='form-control' type="number" name="quantity" id="quantity" onChange={this.handleChange} required="required"></input>
+                            <input className='form-control' type="number" name="quantity" id="quantity" onChange={this.handleChange} value={this.state.stockData.quantity}></input>
                         </div>
                         <div className='col-md-6'>
                             <label className='form-label'>Rate</label>
-                            <input className='form-control' type="number" name="price" id="price" onChange={this.handleChange} required="required"></input>
+                            <input className='form-control' type="number" name="price" id="price" onChange={this.handleChange} value={this.state.stockData.price}></input>
                         </div>
                     </div>
                     <hr></hr>
-                    <button className='btn btn-success' onClick={this.handleAdd} >Add Item</button>
+                    <button type="button" className='btn btn-success' onClick={this.handleAdd} >Add Item</button>
                     <div className='tablediv container-fluid'>
                         <table className='table table-striped text-center'>
                             <thead >
@@ -230,12 +229,20 @@ export class StockForm extends Component {
                             <tbody>
                                 {purchaseArray.map((item, index) => (
                                     editItemId === item.id ?
-                                    <EditableRow item={this.state.stockData} handleChange={this.handleChange} handleEditSave={this.handleEditSave} handleCancel={this.handleEditCancel}/> :
-                                    <ReadOnlyRow item={item} index={index} handleEditRow={this.handleEditRow} handleDelete={this.handleDelete} />
+                                        <EditableRow item={this.state.stockData} handleChange={this.handleChange} handleEditSave={this.handleEditSave} handleCancel={this.handleEditCancel} /> :
+                                        <ReadOnlyRow item={item} index={index} handleEditRow={this.handleEditRow} handleDelete={this.handleDelete} />
                                 ))}
                             </tbody>
                         </table>
                     </div>
+                    {
+                        purchaseArray.length ?
+                            <div className='row'>
+                                <button className=' col ms-2 btn btn-success'> Submit Data</button>
+                                <div className='col'></div>
+                                <div className='col'></div>
+                            </div>: ""
+                    }
                 </form>
             </div>
         )
