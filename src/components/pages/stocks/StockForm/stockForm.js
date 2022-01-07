@@ -131,7 +131,7 @@ export class StockForm extends Component {
     handleAdd = (e) => { // adding item in an array to display in the table 
         e.preventDefault();
         let { stockData, purchaseArray } = this.state;
-        if (!this.formValidate()) return toast.info("Please provide value in all fields !!")
+        if (!this.formValidate("add")) return toast.info("Please provide value in all fields !!")
         // checking if user adds item twice with same rate
         if (this.handleItemUnique()) return toast.error("Item already added !! ")
         purchaseArray.push(stockData);
@@ -151,8 +151,9 @@ export class StockForm extends Component {
         return error
     }
 
-    formValidate = () => {
-        let { stockData, stockDataError } = this.state;
+    formValidate = (type) => {
+        let { stockData, stockDataError, purchaseArray} = this.state;
+        if(type==="add"){
         stockDataError.itemName = stockData.itemName ? "" : "error";
         stockDataError.itemType = stockData.itemType ? "" : "error";
         stockDataError.price = stockData.price ? "" : "error";
@@ -164,6 +165,11 @@ export class StockForm extends Component {
         let errorArray = Object.values(stockDataError).filter((error) => error);
         if (errorArray.length === 0) return true
         else return false
+        }
+        if(type==="submit"){
+            if(purchaseArray.length === 0) return false
+            else return true 
+        }    
     }
 
     handleDelete = (e, id) => {
@@ -173,6 +179,15 @@ export class StockForm extends Component {
         purchaseArray.splice(index, 1);
         this.setState({
             purchaseArray: [...purchaseArray]
+        })
+    }
+
+    handleSubmit=(e)=>{
+        e.preventDefault();
+        if (!this.formValidate("submit")) return toast.info("Please add items of the bill");
+        this.setState({
+            purchaseArray: [],
+            stockData: {}
         })
     }
 
@@ -238,7 +253,7 @@ export class StockForm extends Component {
                     {
                         purchaseArray.length ?
                             <div className='row'>
-                                <button className=' col ms-2 btn btn-success'> Submit Data</button>
+                                <button className=' col ms-2 btn btn-success' onClick={this.handleSubmit}> Submit Data</button>
                                 <div className='col'></div>
                                 <div className='col'></div>
                             </div>: ""
