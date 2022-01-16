@@ -1,5 +1,4 @@
-import { toast } from "react-toastify"
-import { errorHandler } from "../../utilities/errorHandler"
+import { errorHandler, Toaster } from "../../utilities/errorHandler"
 import { HttpCLient } from "../../utilities/httpClient"
 
 export const StockConstants={
@@ -7,7 +6,9 @@ export const StockConstants={
     GET_ITEMTYPE_SUCCESS: "GET_ITEMTYPE_SUCCESS",
     GET_ITEMTYPE_FAILURE: "GET_ITEMTYPE_FAILURE",
     GET_ITEMS_SUCCESS: "GET_ITEMS_SUCCESS",
-    GET_ITEMS_FAILURE : "GET_ITEMS_FAILURE"
+    GET_ITEMS_FAILURE : "GET_ITEMS_FAILURE",
+    ADD_ITEMS_SUCCESS : 'ADD_ITEMS_SUCCESS',
+    ADD_ITEMS_FAILURE : 'ADD_ITEMS_FAILURE',
 }
 
 const isLoading=()=>({
@@ -34,6 +35,16 @@ const getItemsFailure=(error)=>({
     payload: error
 })
 
+const addStockSuccess=(data)=>({
+    type: StockConstants.ADD_ITEMS_SUCCESS,
+    payload: data
+})
+
+const addStockFailure=(error)=>({
+    type:StockConstants.ADD_ITEMS_FAILURE,
+    payload:error
+})
+
 export const getItemTypeAction=()=>dispatch=>{
     dispatch(isLoading());
     HttpCLient.GET('/stock/getItemType',null,true)
@@ -44,7 +55,7 @@ export const getItemTypeAction=()=>dispatch=>{
         .catch((error)=>{
            let errorMsg = errorHandler(error);
             dispatch(getItemTypeFailure(errorMsg));
-            toast.error(errorMsg);
+            Toaster(errorMsg);
         })
 }
 
@@ -56,8 +67,21 @@ export const getItemsAction=()=>dispatch=>{
             console.log(response);
         })
         .catch((error)=>{
-            let errorMsg = errorHandler(error);
-            dispatch(getItemTypeFailure(errorMsg));
-            toast.error(errorMsg);
+          let errorMsg= errorHandler(error);
+            dispatch(getItemsFailure(errorMsg));
+            Toaster(errorMsg);
+        })
+}
+
+export const AddStockAction=(data)=>dispatch=>{
+    dispatch(isLoading());
+    HttpCLient.POST('/stock/addStock',data,null,true)
+        .then((response)=>{
+            dispatch(addStockSuccess(response.data.data))
+        })
+        .catch((error)=>{
+            dispatch(addStockFailure(error))
+           let errorMsg =  errorHandler(error)
+           Toaster(errorMsg)
         })
 }

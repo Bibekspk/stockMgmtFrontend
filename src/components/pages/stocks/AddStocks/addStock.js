@@ -1,20 +1,23 @@
-import React,{useState} from 'react'
-import { useSelector } from 'react-redux'
+import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { StockFormComponent } from '../StockForm/stockForm'
+import { AddStockAction } from '../../../actions/stock.action'
 
 export const AddStock=()=> {
 
-    let state = useSelector((state)=>(state.stocks))
+    let state = useSelector((state)=>(state.stocks));
+    let dispatch = useDispatch()
 
     let handleSubmit=(data)=>{
         console.log(data);
+        dispatch(AddStockAction(data));
     }
 
     return (
         <div>
             <StockFormComponent
                 mode="Add Stock"
-                submitData={handleSubmit}
+                SubmitData={handleSubmit}
                 isLoading = {state.isLoading}
             >
             </StockFormComponent>        

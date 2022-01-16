@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 import { ReadOnlyRow } from './ReadOnlyRow';
 import './stockForm.css'
 import { EditableRow } from './EditableRow';
+import { errorHandler, Toaster } from '../../../../utilities/errorHandler';
 
 let addForm = {
     'id': "",
@@ -79,7 +80,8 @@ export class StockForm extends Component {
         }))
     }
 
-    handleSelectItemType = (selectedOption) => {
+    handleSelectItemType = (selectedOption) => { //selectedOPtion is from react select
+        //it gets value and label of selected item
         this.setState((prevState) => ({
             stockData: {
                 ...prevState.stockData,
@@ -131,21 +133,20 @@ export class StockForm extends Component {
     handleAdd = (e) => { // adding item in an array to display in the table 
         e.preventDefault();
         let { stockData, purchaseArray } = this.state;
-        if (!this.formValidate("add")) return toast.info("Please provide value in all fields !!")
+        if (!this.formValidate("add")) return Toaster("Please provide value in all fields !!")
         // checking if user adds item twice with same rate
-        if (this.handleItemUnique()) return toast.error("Item already added !! ")
+        if (this.handleItemUnique()) return Toaster("Item already added !! ")
         purchaseArray.push(stockData);
         this.setState({
             purchaseArray: [...purchaseArray],
         })
-        // this.props.submitData(this.state.stockData);
     }
 
     handleItemUnique = () => { // checking if user adds item twice 
         let { stockData, purchaseArray } = this.state;
         let error = ""
         purchaseArray.length >= 1 && purchaseArray.map((item) => {
-            if (item.itemName === stockData.itemName && item.price === stockData.price) //same item different rate 
+            if (item.itemName === stockData.itemName) //same item different rate 
                 error = "true"
         })
         return error
@@ -184,11 +185,12 @@ export class StockForm extends Component {
 
     handleSubmit=(e)=>{
         e.preventDefault();
-        if (!this.formValidate("submit")) return toast.info("Please add items of the bill");
-        this.setState({
-            purchaseArray: [],
-            stockData: {}
-        })
+        if (!this.formValidate("submit")) return Toaster("Please add items of the bill");
+        this.props.SubmitData(this.state.purchaseArray)
+        // this.setState({
+        //     purchaseArray: [],
+        //     stockData: {}
+        // })
     }
 
     render() {
@@ -266,13 +268,14 @@ export class StockForm extends Component {
 
 const MapDispatchToProps = dispatch => ({
     getItemType: () => (dispatch(getItemTypeAction())),
-    getItems: () => (dispatch(getItemsAction()))
+    getItems: () => (dispatch(getItemsAction())),
 })
 
 const MapStateToProps = (rootState) => ({
     itemTypeArray: rootState.stocks.itemTypeArray,
     isLoading: rootState.stocks.isLoading,
-    itemArray: rootState.stocks.itemsArray
+    itemArray: rootState.stocks.itemsArray,
+    isSuccess: rootState.stocks.isSuccess
 })
 
 export const StockFormComponent = connect(MapStateToProps, MapDispatchToProps)(StockForm)

@@ -2,7 +2,7 @@ import React from 'react';
 
 export const ReadOnlyRow = ({ item,index,handleEditRow,handleDelete }) => {
     return (
-            <tr key={item.id}>
+            <tr key={index}>
                 <td>{index}</td>
                 <td>{item.itemName}</td>
                 <td>{item.quantity}</td>

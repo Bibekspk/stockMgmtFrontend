@@ -1,7 +1,9 @@
+import { toast } from "react-toastify";
+
 export const errorHandler = (error)=>{
     debugger;
     let errorMsg;
-    if(error.response.data.msg){
+    if(typeof(error) ==="object"){
         let errorBody = error.response.data.msg 
         if(errorBody.message){
             errorMsg = errorBody.message
@@ -10,5 +12,9 @@ export const errorHandler = (error)=>{
             errorMsg = errorBody
         }
     }
-    return errorMsg
+    return errorMsg;
+}
+
+export const Toaster = (error)=>{
+   return toast.error(error)
 }

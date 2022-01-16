@@ -2,7 +2,7 @@ import React from 'react'
 
 export const EditableRow=({item,handleChange,handleEditSave,handleCancel})=> {
     return (
-            <tr>
+            <tr key={item.id}>
                 <td>
                   SN
                 </td>
