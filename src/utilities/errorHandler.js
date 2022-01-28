@@ -15,6 +15,14 @@ export const errorHandler = (error)=>{
     return errorMsg;
 }
 
-export const Toaster = (error)=>{
+export const ErrorToaster = (error)=>{
    return toast.error(error)
+}
+
+export const InfoToaster = (info)=>{
+    return toast.info(info);
+}
+
+export const SuccessToaster = (success)=>{
+    return toast.success(success);
 }

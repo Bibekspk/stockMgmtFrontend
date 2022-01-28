@@ -1,4 +1,4 @@
-import { errorHandler, Toaster } from "../../utilities/errorHandler"
+import { errorHandler, ErrorToaster, SuccessToaster } from "../../utilities/errorHandler"
 import { HttpCLient } from "../../utilities/httpClient"
 
 export const StockConstants={
@@ -55,7 +55,7 @@ export const getItemTypeAction=()=>dispatch=>{
         .catch((error)=>{
            let errorMsg = errorHandler(error);
             dispatch(getItemTypeFailure(errorMsg));
-            Toaster(errorMsg);
+            ErrorToaster(errorMsg);
         })
 }
 
@@ -69,7 +69,7 @@ export const getItemsAction=()=>dispatch=>{
         .catch((error)=>{
           let errorMsg= errorHandler(error);
             dispatch(getItemsFailure(errorMsg));
-            Toaster(errorMsg);
+            ErrorToaster(errorMsg);
         })
 }
 
@@ -78,10 +78,11 @@ export const AddStockAction=(data)=>dispatch=>{
     HttpCLient.POST('/stock/addStock',data,null,true)
         .then((response)=>{
             dispatch(addStockSuccess(response.data.data))
+            SuccessToaster(response.data.msg)
         })
         .catch((error)=>{
             dispatch(addStockFailure(error))
            let errorMsg =  errorHandler(error)
-           Toaster(errorMsg)
+           ErrorToaster(errorMsg)
         })
 }

@@ -1,6 +1,4 @@
 import { AppRouting } from "./app-routing";
-import { LoginComponent } from "./components/auth/login/login";
-import { Topnavbar } from "./components/shared/navbar/navbar";
 import 'react-toastify/dist/ReactToastify.css';
 import {ToastContainer} from 'react-toastify';
 

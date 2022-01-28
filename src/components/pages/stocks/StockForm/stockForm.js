@@ -3,19 +3,18 @@ import { nanoid } from 'nanoid'
 import { connect } from 'react-redux';
 import { getItemsAction, getItemTypeAction } from '../../../actions/stock.action';
 import Select from 'react-select';
-import { toast } from 'react-toastify';
 import { ReadOnlyRow } from './ReadOnlyRow';
 import './stockForm.css'
 import { EditableRow } from './EditableRow';
-import { errorHandler, Toaster } from '../../../../utilities/errorHandler';
+import { InfoToaster } from '../../../../utilities/errorHandler';
+import { BillingForm } from '../StockForm/billingForm'
+
 
 let addForm = {
     'id': "",
     'itemName': "",
     'quantity': "",
-    'itemType': "",
     'price': "",
-    'purchasedDate': ""
 }
 
 export class StockForm extends Component {
@@ -23,14 +22,15 @@ export class StockForm extends Component {
         super(props);
 
         this.state = {
-            itemType: [],
             items: [],
             stockData: { ...addForm },
             stockDataError: { ...addForm },
             purchaseArray: [],
             editItemId: '',
             selectedItem: "",
-            selectedItemType: ""
+            showModal: "",
+            purchaseDate: "",
+            billno:"",
         }
     }
 
@@ -39,32 +39,20 @@ export class StockForm extends Component {
         this.props.getItems();
     }
 
-    componentDidUpdate = (prevProps) => { //checks if the prevProps and newProps are same, if not it runs
-        let { itemType, items } = this.state
-        if (prevProps.itemTypeArray !== this.props.itemTypeArray) { //checking prev and latest prop
-            (this.props.itemTypeArray || []).map((item) => {
-                let itemObject = {
-                    value: item.itemType,
-                    label: item.itemType
-                }
-                itemType.push(itemObject);
-                this.setState({
-                    'itemType': [...itemType] // spreading array to add new object individually into the array
-                })
-            })
-        }
+    componentDidUpdate = (prevProps, prevState) => { //checks if the prevProps and newProps are same, if not it runs
+        let { items } = this.state
+
         if (prevProps.itemArray !== this.props.itemArray) {
-            (this.props.itemArray || []).map((item, index) => {
+            (this.props.itemArray || []).map((item, index) => {//checking prev and latest prop
                 let itemObject = { // preparing array of item for select react bcoz it accepts objet with value and label 
                     value: item.itemName,
                     label: item.itemName,
                     id: index + 1
                 }
-
                 items.push(itemObject);
                 this.setState((prevState) => ({
                     ...prevState,
-                    items: [...items]
+                    items: [...items] // spreading array to add new object individually into the array
                 }))
             })
         }
@@ -77,17 +65,6 @@ export class StockForm extends Component {
                 ...prevState.stockData,
                 [name]: value
             }
-        }))
-    }
-
-    handleSelectItemType = (selectedOption) => { //selectedOPtion is from react select
-        //it gets value and label of selected item
-        this.setState((prevState) => ({
-            stockData: {
-                ...prevState.stockData,
-                'itemType': selectedOption.value
-            },
-            selectedItemType: selectedOption
         }))
     }
 
@@ -133,9 +110,9 @@ export class StockForm extends Component {
     handleAdd = (e) => { // adding item in an array to display in the table 
         e.preventDefault();
         let { stockData, purchaseArray } = this.state;
-        if (!this.formValidate("add")) return Toaster("Please provide value in all fields !!")
+        if (!this.formValidate("add")) return InfoToaster("Please provide value in all fields !!")
         // checking if user adds item twice with same rate
-        if (this.handleItemUnique()) return Toaster("Item already added !! ")
+        if (this.handleItemUnique()) return InfoToaster("Item already added !! ")
         purchaseArray.push(stockData);
         this.setState({
             purchaseArray: [...purchaseArray],
@@ -153,24 +130,23 @@ export class StockForm extends Component {
     }
 
     formValidate = (type) => {
-        let { stockData, stockDataError, purchaseArray} = this.state;
-        if(type==="add"){
-        stockDataError.itemName = stockData.itemName ? "" : "error";
-        stockDataError.itemType = stockData.itemType ? "" : "error";
-        stockDataError.price = stockData.price ? "" : "error";
-        stockDataError.quantity = stockData.quantity ? "" : "error";
+        let { stockData, stockDataError, purchaseArray } = this.state;
+        if (type === "add") {
+            stockDataError.itemName = stockData.itemName ? "" : "error";
+            stockDataError.price = stockData.price ? "" : "error";
+            stockDataError.quantity = stockData.quantity ? "" : "error";
 
-        this.setState({
-            stockDataError
-        })
-        let errorArray = Object.values(stockDataError).filter((error) => error);
-        if (errorArray.length === 0) return true
-        else return false
+            this.setState({
+                stockDataError
+            })
+            let errorArray = Object.values(stockDataError).filter((error) => error);
+            if (errorArray.length === 0) return true
+            else return false
         }
-        if(type==="submit"){
-            if(purchaseArray.length === 0) return false
-            else return true 
-        }    
+        if (type === "submit") {
+            if (purchaseArray.length === 0) return false
+            else return true
+        }
     }
 
     handleDelete = (e, id) => {
@@ -183,14 +159,34 @@ export class StockForm extends Component {
         })
     }
 
-    handleSubmit=(e)=>{
+    parentCallBack = (data) => {
+        if (!data) { // this runs when user clicks cancel
+            this.setState({
+                showModal: false // 
+            })
+        }
+        if(data){ // this runs when user clicks submit
+            console.log("datafromodal",data)
+            this.setState({
+                billno: data.billno,
+                purchaseDate: data.purchaseDate
+            },()=>{
+                let datafinal = {
+                    billno: this.state.billno,
+                    purchaseDate: this.state.purchaseDate,
+                    purchaseArray: this.state.purchaseArray
+                }
+                this.props.SubmitData(datafinal)
+            })
+        }
+    }
+
+    handleSubmit = (e) => {
         e.preventDefault();
-        if (!this.formValidate("submit")) return Toaster("Please add items of the bill");
-        this.props.SubmitData(this.state.purchaseArray)
-        // this.setState({
-        //     purchaseArray: [],
-        //     stockData: {}
-        // })
+        if (!this.formValidate("submit")) return InfoToaster("Please add items of the bill");
+        this.setState({
+            showModal: true
+        })
     }
 
     render() {
@@ -206,15 +202,6 @@ export class StockForm extends Component {
                                 options={this.state.items}
                                 onChange={this.handleSelectItem}
                                 value={this.state.selectedItem}
-                                isSearchable="true">
-                            </Select>
-                        </div>
-                        <div className='col'>
-                            <label className='form-label'>Item Type</label>
-                            <Select maxMenuHeight={150}
-                                options={this.state.itemType}
-                                onChange={this.handleSelectItemType}
-                                value={this.state.selectedItemType}
                                 isSearchable="true">
                             </Select>
                         </div>
@@ -244,11 +231,13 @@ export class StockForm extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {purchaseArray.map((item, index) => (
-                                    editItemId === item.id ?
-                                        <EditableRow item={this.state.stockData} handleChange={this.handleChange} handleEditSave={this.handleEditSave} handleCancel={this.handleEditCancel} /> :
-                                        <ReadOnlyRow item={item} index={index} handleEditRow={this.handleEditRow} handleDelete={this.handleDelete} />
-                                ))}
+                                {purchaseArray.length ?
+                                    purchaseArray.map((item, index) => (
+                                        editItemId === item.id ?
+                                            <EditableRow item={this.state.stockData} handleChange={this.handleChange} handleEditSave={this.handleEditSave} handleCancel={this.handleEditCancel} /> :
+                                            <ReadOnlyRow item={item} index={index} handleEditRow={this.handleEditRow} handleDelete={this.handleDelete} />
+                                    ))
+                                    : ""}
                             </tbody>
                         </table>
                     </div>
@@ -258,9 +247,10 @@ export class StockForm extends Component {
                                 <button className=' col ms-2 btn btn-success' onClick={this.handleSubmit}> Submit Data</button>
                                 <div className='col'></div>
                                 <div className='col'></div>
-                            </div>: ""
+                            </div> : ""
                     }
                 </form>
+                {this.state.showModal && <BillingForm show={this.state.showModal} parentCallBack={this.parentCallBack} />}
             </div>
         )
     }

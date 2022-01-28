@@ -1,5 +1,6 @@
 import { HttpCLient } from "../../utilities/httpClient";
 import navigate from '../../history'
+import { ErrorToaster,errorHandler } from "../../utilities/errorHandler";
 
 export const AuthConstant ={
     LOGIN_FAILURE: "LOGIN_FAILURE",
@@ -33,5 +34,7 @@ export const LoginAction=(data)=>dispatch=>{
         })
         .catch((error)=>{
             dispatch((loginFailureAction(error)));
+            let errorMsg = errorHandler(error)
+            ErrorToaster(errorMsg);
         })
 }
