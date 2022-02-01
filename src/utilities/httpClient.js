@@ -5,7 +5,7 @@ let BASE_URL= process.env.REACT_APP_BASE_URL;
 let http = axios.create({
     baseURL:BASE_URL,
     responseType: 'json',
-    timeout: 10000,
+    timeout: 30000,
     timeoutErrorMessage: "Server timed out"
 })
 
