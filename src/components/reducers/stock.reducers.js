@@ -8,6 +8,7 @@ export const StockReducers =(state=[],action)=>{
                 ...state,
                 isLoading: true,
                 isSuccess: false,
+                isAddSuccess: false,
                 error: null
             }
         case StockConstants.GET_ITEMTYPE_SUCCESS:
@@ -41,6 +42,21 @@ export const StockReducers =(state=[],action)=>{
                 error:action.payload
             }
 
+        case StockConstants.ADD_ITEMS_FAILURE:
+            return {
+                ...state,
+                isLoading: false,
+                isAddSuccess: false,
+                error: action.payload
+            }
+
+        case StockConstants.ADD_ITEMS_SUCCESS:
+            return {
+                ...state,
+                isLoading: false,
+                isSuccess: true,
+                isAddSuccess: true,
+            }
         default:
             return {
                 ...state

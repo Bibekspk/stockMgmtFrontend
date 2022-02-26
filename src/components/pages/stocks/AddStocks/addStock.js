@@ -9,8 +9,8 @@ export const AddStock=()=> {
     let dispatch = useDispatch()
 
     let handleSubmit=(data)=>{
-        console.log("inside addStock",data);
        dispatch(AddStockAction(data));
+      return true
     }
 
     return (

@@ -155,7 +155,8 @@ export class StockForm extends Component {
         let index = purchaseArray.findIndex((item) => item.id === id);
         purchaseArray.splice(index, 1);
         this.setState({
-            purchaseArray: [...purchaseArray]
+            purchaseArray: [...purchaseArray],
+            showModal: false // seeting to false makes modal apprear again if submit button is clicked 
         })
     }
 
@@ -165,8 +166,8 @@ export class StockForm extends Component {
                 showModal: false // 
             })
         }
-        if(data){ // this runs when user clicks submit
-            console.log("datafromodal",data)
+        if(data){ // this runs when user clicks submit of modal 
+            // console.log("datafromodal",data)
             this.setState({
                 billno: data.billno,
                 purchaseDate: data.purchaseDate
@@ -176,10 +177,21 @@ export class StockForm extends Component {
                     purchaseDate: this.state.purchaseDate,
                     purchaseArray: this.state.purchaseArray
                 }
-                this.props.SubmitData(datafinal)
+                this.props.SubmitData(datafinal);
+                setTimeout(()=>{
+                    if(this.props.isAddSuccess){
+                        this.setState({
+                            stockData: {...addForm},
+                            purchaseArray: [],
+                            selectedItem: ""
+                        })
+                    }
+                },1000)
             })
         }
+        
     }
+
 
     handleSubmit = (e) => {
         e.preventDefault();
@@ -187,6 +199,7 @@ export class StockForm extends Component {
         this.setState({
             showModal: true
         })
+       
     }
 
     render() {
@@ -265,7 +278,7 @@ const MapStateToProps = (rootState) => ({
     itemTypeArray: rootState.stocks.itemTypeArray,
     isLoading: rootState.stocks.isLoading,
     itemArray: rootState.stocks.itemsArray,
-    isSuccess: rootState.stocks.isSuccess
+    isAddSuccess: rootState.stocks.isAddSuccess
 })
 
 export const StockFormComponent = connect(MapStateToProps, MapDispatchToProps)(StockForm)
