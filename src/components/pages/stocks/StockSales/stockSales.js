@@ -1,5 +1,6 @@
 import React from 'react';
 import { useDispatch,useSelector} from 'react-redux';
+import { SaleItemsAction } from '../../../actions/stock.action';
 import { StockFormComponent } from '../StockForm/stockForm';
 
 export const StockSale = ()=>{
@@ -9,6 +10,7 @@ export const StockSale = ()=>{
 
     const confirmSale = (data)=>{
         console.log(data);
+        dispatch(SaleItemsAction(data));
     }
 
     return (

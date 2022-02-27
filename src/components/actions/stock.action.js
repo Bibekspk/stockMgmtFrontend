@@ -9,6 +9,8 @@ export const StockConstants={
     GET_ITEMS_FAILURE : "GET_ITEMS_FAILURE",
     ADD_ITEMS_SUCCESS : 'ADD_ITEMS_SUCCESS',
     ADD_ITEMS_FAILURE : 'ADD_ITEMS_FAILURE',
+    SALE_ITEMS_FAILURE : 'SALE_ITEMS_FAILURE',
+    SALE_ITES_SUCCESS : 'SALE_ITEMS_SUCCESS'
 }
 
 const isLoading=()=>({
@@ -43,6 +45,16 @@ const addStockSuccess=(data)=>({
 const addStockFailure=(error)=>({
     type:StockConstants.ADD_ITEMS_FAILURE,
     payload:error
+})
+
+const saleItemsSuccess = (data)=>({
+    type: StockConstants.SALE_ITES_SUCCESS,
+    payload: data
+})
+
+const saleItemsFailure =(error)=>({
+    type: StockConstants.SALE_ITEMS_FAILURE,
+    payload: error
 })
 
 export const getItemTypeAction=()=>dispatch=>{
@@ -84,5 +96,16 @@ export const AddStockAction=(data)=>dispatch=>{
             dispatch(addStockFailure(error))
            let errorMsg =  errorHandler(error)
            ErrorToaster(errorMsg)
+        })
+}
+
+export const SaleItemsAction=(data)=>dispatch=>{
+    dispatch(isLoading());
+    HttpCLient.POST('/stock/saleStock',data,null,true)
+        .then((data)=>{
+            console.log(data);
+        })
+        .catch((err)=>{
+            console.log(err);
         })
 }
