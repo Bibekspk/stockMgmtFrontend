@@ -46,7 +46,7 @@ export const StockReducers =(state=[],action)=>{
             return {
                 ...state,
                 isLoading: false,
-                isAddSuccess: false,
+                isSuccess: false,
                 error: action.payload
             }
 
@@ -55,7 +55,6 @@ export const StockReducers =(state=[],action)=>{
                 ...state,
                 isLoading: false,
                 isSuccess: true,
-                isAddSuccess: true,
             }
         default:
             return {

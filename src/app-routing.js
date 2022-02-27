@@ -8,8 +8,9 @@ import { Topnavbar } from './components/shared/navbar/navbar';
 import { AddItemType } from './components/pages/stocks/AddItemType/addItemType';
 import { AddStock } from './components/pages/stocks/AddStocks/addStock';
 import { AddItems } from './components/pages/Items/AddItems/addItems';
+import { StockSale } from './components/pages/stocks/StockSales/stockSales';
 
-const ProtectedRoute = (props)=>{ // yesma <ProtectedRoute/> aaucha props.children ma 
+const ProtectedRoute = (props)=>{ // yesma <ProtectedRoute/> ra component aaucha props.children ma 
 
     return localStorage.getItem("token") ?
         <div>
@@ -44,6 +45,7 @@ export const AppRouting = ()=>{
                 <Route path='/addStock' element={<ProtectedRoute><AddStock/></ProtectedRoute>}></Route>
                 <Route path='/addItemType' element={<ProtectedRoute><AddItemType/></ProtectedRoute>}></Route>
                 <Route path="/addItem" element={<ProtectedRoute><AddItems/></ProtectedRoute>}></Route>
+                <Route path = "/saleItems" element={<ProtectedRoute><StockSale/></ProtectedRoute>}></Route>
                 <Route path="*" element={<Error/>}></Route>
             </Routes>
         </BrowserRouter>

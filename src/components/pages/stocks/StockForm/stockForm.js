@@ -167,7 +167,6 @@ export class StockForm extends Component {
             })
         }
         if(data){ // this runs when user clicks submit of modal 
-            // console.log("datafromodal",data)
             this.setState({
                 billno: data.billno,
                 purchaseDate: data.purchaseDate
@@ -179,7 +178,7 @@ export class StockForm extends Component {
                 }
                 this.props.SubmitData(datafinal);
                 setTimeout(()=>{
-                    if(this.props.isAddSuccess){
+                    if(this.props.isSuccess){
                         this.setState({
                             stockData: {...addForm},
                             purchaseArray: [],
@@ -278,7 +277,7 @@ const MapStateToProps = (rootState) => ({
     itemTypeArray: rootState.stocks.itemTypeArray,
     isLoading: rootState.stocks.isLoading,
     itemArray: rootState.stocks.itemsArray,
-    isAddSuccess: rootState.stocks.isAddSuccess
+    isSuccess: rootState.stocks.isSuccess
 })
 
 export const StockFormComponent = connect(MapStateToProps, MapDispatchToProps)(StockForm)
