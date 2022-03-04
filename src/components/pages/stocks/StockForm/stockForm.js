@@ -30,7 +30,7 @@ export class StockForm extends Component {
             selectedItem: "",
             showModal: "",
             purchaseDate: "",
-            billno:"",
+            billno: "",
         }
     }
 
@@ -41,12 +41,12 @@ export class StockForm extends Component {
 
     componentDidUpdate = (prevProps, prevState) => { //checks if the prevProps and newProps are same, if not it runs
         let { items } = this.state
-
         if (prevProps.itemArray !== this.props.itemArray) {
             (this.props.itemArray || []).map((item, index) => {//checking prev and latest prop
                 let itemObject = { // preparing array of item for select react bcoz it accepts objet with value and label 
                     value: item.itemName,
                     label: item.itemName,
+                    stock: item.totalStock,
                     id: index + 1
                 }
                 items.push(itemObject);
@@ -73,7 +73,7 @@ export class StockForm extends Component {
             stockData: {
                 ...prevState.stockData,
                 itemName: selectedOption.value,
-                id: nanoid(7)
+                id: selectedOption.id
             },
             selectedItem: selectedOption // saving selectedOption value bcoz this value is seen in input field 
             // doing this for using reset button for reseting field
@@ -107,8 +107,24 @@ export class StockForm extends Component {
         })
     }
 
+    stockValidator = () => { //to check the stock of item and quatity entered be valid  
+        let error = ""
+        if (this.props.mode === "Sales of Stocks") { // when user enters quqntity more than stock avaialble
+            let id = this.state.stockData.id
+            this.state.items.map((item) => {
+                if (item.id === id) {
+                    if (Number(item.stock) < Number(this.state.stockData.quantity)) {
+                        error = `Max Stock of Item:${item.value} is ${item.stock}`;
+                    }
+                }
+            })
+        }
+       return error
+    }
+
     handleAdd = (e) => { // adding item in an array to display in the table 
         e.preventDefault();
+        if(this.stockValidator()) return InfoToaster(this.stockValidator()); 
         let { stockData, purchaseArray } = this.state;
         if (!this.formValidate("add")) return InfoToaster("Please provide value in all fields !!")
         // checking if user adds item twice with same rate
@@ -166,31 +182,30 @@ export class StockForm extends Component {
                 showModal: false // 
             })
         }
-        if(data){ // this runs when user clicks submit of modal 
+        if (data) { // this runs when user clicks submit of modal 
             this.setState({
                 billno: data.billno,
                 purchaseDate: data.purchaseDate
-            },()=>{
+            }, () => {
                 let datafinal = {
                     billno: this.state.billno,
                     purchaseDate: this.state.purchaseDate,
                     purchaseArray: this.state.purchaseArray
                 }
                 this.props.SubmitData(datafinal);
-                setTimeout(()=>{
-                    if(this.props.isSuccess){
+                setTimeout(() => {
+                    if (this.props.isSuccess) {
                         this.setState({
-                            stockData: {...addForm},
+                            stockData: { ...addForm },
                             purchaseArray: [],
                             selectedItem: ""
                         })
                     }
-                },1000)
+                }, 1000)
             })
         }
-        
-    }
 
+    }
 
     handleSubmit = (e) => {
         e.preventDefault();
@@ -198,7 +213,7 @@ export class StockForm extends Component {
         this.setState({
             showModal: true
         })
-       
+
     }
 
     render() {
