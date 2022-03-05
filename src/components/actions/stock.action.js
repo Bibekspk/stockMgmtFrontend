@@ -102,8 +102,8 @@ export const AddStockAction=(data)=>dispatch=>{
 export const SaleItemsAction=(data)=>dispatch=>{
     dispatch(isLoading());
     HttpCLient.POST('/stock/saleStock',data,null,true)
-        .then((data)=>{
-            
+        .then((response)=>{
+            SuccessToaster(response.data.msg);
         })
         .catch((err)=>{
             console.log(err);
