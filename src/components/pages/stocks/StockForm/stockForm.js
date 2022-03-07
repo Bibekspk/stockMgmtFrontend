@@ -198,7 +198,8 @@ export class StockForm extends Component {
                         this.setState({
                             stockData: { ...addForm },
                             purchaseArray: [],
-                            selectedItem: ""
+                            selectedItem: "",
+                            showModal: false
                         })
                     }
                 }, 1000)
