@@ -56,6 +56,18 @@ export const StockReducers =(state=[],action)=>{
                 isLoading: false,
                 isSuccess: true,
             }
+        case StockConstants.SALE_ITEMS_SUCCESS: 
+             return {
+                ...state,
+                isLoading: false,
+                isSuccess: true
+            } 
+        case StockConstants.SALE_ITEMS_FAILURE: 
+            return {
+                ...state,
+                isLoading: false,
+                isSuccess: false
+            }
         default:
             return {
                 ...state
