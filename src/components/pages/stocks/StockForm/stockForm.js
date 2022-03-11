@@ -93,6 +93,15 @@ export class StockForm extends Component {
         e.preventDefault();
         let { purchaseArray, stockData } = this.state;
         let index = purchaseArray.findIndex((item) => item.id === id);//finds index of id in purchase array to edit 
+        if(this.stockValidator()) { // checking stock validation 
+            this.setState((prevState)=>({
+                stockData:{
+                    ...prevState.stockData,
+                    quantity: ""
+                }
+            }))
+            return InfoToaster(this.stockValidator()); 
+        }
         purchaseArray[index] = stockData; // new stockdata is made in handeleChange and saved in array again
         this.setState({
             purchaseArray: [...purchaseArray],
